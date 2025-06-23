@@ -10,13 +10,14 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Chosen Palette: Earthy Green & Tech Yellow -->
-    <!-- Application Structure Plan: A single-page, vertically scrolling marketing/informational SPA. The structure guides the user logically from the high-level vision to the technical details. It starts with the "Why" (Problem & Solution), moves to the "How" (Architecture & AI), covers the "What" (Features & Roles), and ends with the technical foundation (Tech Stack). This narrative flow is more engaging for a potential partner or investor than a dry technical document. Key interactions include an interactive architecture diagram walkthrough, a tabbed interface for complex user roles, and live charts to make AI capabilities tangible. This design choice prioritizes storytelling and conceptual understanding. -->
+    <!-- Application Structure Plan: A single-page, vertically scrolling marketing/informational SPA. The structure guides the user logically from the high-level vision to the technical details. It starts with the "Why" (Problem & Solution), moves to the "How" (Architecture & AI), covers the "What" (Features & Roles), and ends with the technical foundation (Tech Stack). This narrative flow is more engaging for a potential partner or investor than a dry technical document. Key interactions include an interactive architecture diagram walkthrough, a tabbed interface for complex user roles, and live charts to make AI capabilities tangible. A new PDF viewer modal is added for deep-dive documentation access. -->
     <!-- Visualization & Content Choices: 
         - Project Vision/Problem: Goal: Inform/Hook. Method: Large hero text and card-based layout for clarity. Justification: Immediately grabs attention and frames the project's purpose.
         - System Architecture: Goal: Explain a complex flow. Method: A pure HTML/CSS diagram built with Tailwind Grid, paired with a JavaScript-powered step-by-step interactive description. Interaction: Clicking a step number highlights the text. Justification: Replaces a static image with a responsive, accessible, and maintainable diagram. It breaks down a dense diagram into a digestible, guided tour.
         - AI Modules: Goal: Demonstrate capabilities. Method: Two Chart.js canvas charts (Doughnut for Health Status, Bar for Ripeness). Interaction: Hover tooltips. Justification: Translates abstract AI outputs ("classification", "estimation") into concrete, easy-to-understand visuals.
         - User Roles: Goal: Organize dense information. Method: Tabbed interface. Interaction: Clicking tabs reveals role-specific features. Justification: Prevents overwhelming the user with a long list of features, allowing them to explore roles they are interested in.
         - Tech Stack: Goal: Inform. Method: Styled HTML grid with icons. Justification: A clean, modern way to present technical information that is visually appealing.
+        - PDF Viewer: Goal: Provide deep-dive documentation. Method: A modal window with an iframe. Interaction: Click a link to open, click a button or overlay to close. Justification: Allows access to the full technical document without navigating away from the SPA, preserving the user experience.
         - Library/Method: Vanilla JS for all interactions, Chart.js for data visualization. -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
@@ -267,10 +268,27 @@
 
     <footer class="bg-gray-800 text-white">
         <div class="container mx-auto px-6 py-8 text-center">
+            <div class="mb-4">
+                 <a href="#" id="view-pdf-button" class="text-green-300 hover:underline">Lihat Dokumen Teknis (PDF)</a>
+            </div>
             <p>&copy; 2025 BananaCare. Semua Hak Cipta Dilindungi.</p>
             <p class="text-sm text-gray-400 mt-2">Memberdayakan Masa Depan Agribisnis Pisang.</p>
         </div>
     </footer>
+
+    <!-- PDF Modal -->
+    <div id="pdf-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4 transition-opacity duration-300">
+        <div class="bg-white rounded-lg shadow-xl w-full h-full max-w-5xl max-h-[90vh] flex flex-col">
+            <div class="flex justify-between items-center p-4 border-b">
+                <h3 class="text-lg font-semibold text-gray-800">Dokumen Spesifikasi Teknis</h3>
+                <button id="close-pdf-modal" class="text-2xl font-bold text-gray-500 hover:text-gray-800">&times;</button>
+            </div>
+            <div class="flex-grow p-2 bg-gray-200">
+                <iframe id="pdf-iframe" class="w-full h-full" frameborder="0"></iframe>
+            </div>
+        </div>
+    </div>
+
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -327,7 +345,7 @@
                     ]
                 },
                 'Petani': {
-                    icon: '🧑‍�',
+                    icon: '🧑‍🌾',
                     description: 'Fokus pada pencatatan dan pengelolaan aktivitas di lahan pribadi.',
                     features: [
                         'Fitur Dasar Lengkap.',
@@ -495,8 +513,33 @@
                     }
                 }
             });
+
+            const viewPdfButton = document.getElementById('view-pdf-button');
+            const pdfModal = document.getElementById('pdf-modal');
+            const closePdfModalButton = document.getElementById('close-pdf-modal');
+            const pdfIframe = document.getElementById('pdf-iframe');
+            
+            // Ganti URL ini dengan URL publik ke file PDF Anda
+            const pdfUrl = 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf';
+
+            viewPdfButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                pdfIframe.src = pdfUrl;
+                pdfModal.classList.remove('hidden');
+            });
+
+            const closeModal = () => {
+                pdfModal.classList.add('hidden');
+                pdfIframe.src = ''; 
+            };
+
+            closePdfModalButton.addEventListener('click', closeModal);
+            pdfModal.addEventListener('click', (e) => {
+                if (e.target === pdfModal) {
+                    closeModal();
+                }
+            });
         });
     </script>
 </body>
 </html>
-�
