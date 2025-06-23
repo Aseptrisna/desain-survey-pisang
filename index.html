@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BananaCare - Platform Monitoring Pisang Cerdas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Earthy Green & Tech Yellow -->
+    <!-- Application Structure Plan: A single-page, vertically scrolling marketing/informational SPA. The structure guides the user logically from the high-level vision to the technical details. It starts with the "Why" (Problem & Solution), moves to the "How" (Architecture & AI), covers the "What" (Features & Roles), and ends with the technical foundation (Tech Stack). This narrative flow is more engaging for a potential partner or investor than a dry technical document. Key interactions include an interactive architecture diagram walkthrough, a tabbed interface for complex user roles, and live charts to make AI capabilities tangible. This design choice prioritizes storytelling and conceptual understanding. -->
+    <!-- Visualization & Content Choices: 
+        - Project Vision/Problem: Goal: Inform/Hook. Method: Large hero text and card-based layout for clarity. Justification: Immediately grabs attention and frames the project's purpose.
+        - System Architecture: Goal: Explain a complex flow. Method: A pure HTML/CSS diagram built with Tailwind Grid, paired with a JavaScript-powered step-by-step interactive description. Interaction: Clicking a step number highlights the text. Justification: Replaces a static image with a responsive, accessible, and maintainable diagram. It breaks down a dense diagram into a digestible, guided tour.
+        - AI Modules: Goal: Demonstrate capabilities. Method: Two Chart.js canvas charts (Doughnut for Health Status, Bar for Ripeness). Interaction: Hover tooltips. Justification: Translates abstract AI outputs ("classification", "estimation") into concrete, easy-to-understand visuals.
+        - User Roles: Goal: Organize dense information. Method: Tabbed interface. Interaction: Clicking tabs reveals role-specific features. Justification: Prevents overwhelming the user with a long list of features, allowing them to explore roles they are interested in.
+        - Tech Stack: Goal: Inform. Method: Styled HTML grid with icons. Justification: A clean, modern way to present technical information that is visually appealing.
+        - Library/Method: Vanilla JS for all interactions, Chart.js for data visualization. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            max-width: 400px;
+            margin: auto;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .step-highlight {
+            background-color: #fef9c3;
+            transition: background-color 0.3s ease;
+        }
+        .tab.active {
+            border-color: #eab308;
+            color: #eab308;
+            background-color: #fffbeb;
+        }
+        .arch-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            grid-template-rows: repeat(4, auto);
+            gap: 1rem;
+            position: relative;
+        }
+        .arch-item {
+            background-color: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .arch-arrow {
+            position: absolute;
+            color: #9ca3af;
+            font-size: 1.5rem;
+            line-height: 1;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <header id="header" class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <a href="#" class="text-2xl font-bold text-green-700">BananaCare</a>
+            <div class="hidden md:flex space-x-8">
+                <a href="#solusi" class="text-gray-600 hover:text-green-700">Solusi</a>
+                <a href="#arsitektur" class="text-gray-600 hover:text-green-700">Arsitektur</a>
+                <a href="#fitur" class="text-gray-600 hover:text-green-700">Fitur</a>
+                <a href="#ai" class="text-gray-600 hover:text-green-700">Modul AI</a>
+                <a href="#teknologi" class="text-gray-600 hover:text-green-700">Teknologi</a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden p-2 rounded-md">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                </svg>
+            </button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
+            <a href="#solusi" class="block py-2 text-gray-600 hover:text-green-700">Solusi</a>
+            <a href="#arsitektur" class="block py-2 text-gray-600 hover:text-green-700">Arsitektur</a>
+            <a href="#fitur" class="block py-2 text-gray-600 hover:text-green-700">Fitur</a>
+            <a href="#ai" class="block py-2 text-gray-600 hover:text-green-700">Modul AI</a>
+            <a href="#teknologi" class="block py-2 text-gray-600 hover:text-green-700">Teknologi</a>
+        </div>
+    </header>
+
+    <main>
+        <section id="hero" class="bg-green-700 text-white">
+            <div class="container mx-auto px-6 py-24 text-center">
+                <h1 class="text-4xl md:text-6xl font-bold leading-tight mb-4">Merevolusi Agribisnis Pisang dengan Data</h1>
+                <p class="text-lg md:text-xl text-green-200 max-w-3xl mx-auto">BananaCare adalah platform digital terintegrasi yang memberdayakan petani dan pelaku agribisnis dengan data akurat dan real-time untuk pengambilan keputusan yang lebih cerdas.</p>
+            </div>
+        </section>
+
+        <section id="solusi" class="py-20">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-gray-800">Tantangan & Solusi Cerdas Kami</h2>
+                    <p class="text-gray-600 mt-2 max-w-2xl mx-auto">Kami memahami tantangan di lapangan dan telah merancang solusi teknologi untuk mengatasinya secara langsung.</p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-10">
+                    <div class="bg-white p-8 rounded-lg shadow-md">
+                        <h3 class="text-2xl font-semibold mb-4 text-red-600">Latar Belakang Masalah</h3>
+                        <ul class="space-y-3 text-gray-700">
+                            <li class="flex items-start"><span class="text-red-500 mr-3 mt-1">●</span><div><strong>Monitoring Manual:</strong> Memakan waktu, tidak konsisten, dan berisiko tinggi terhadap gagal panen.</div></li>
+                            <li class="flex items-start"><span class="text-red-500 mr-3 mt-1">●</span><div><strong>Data Terfragmentasi:</strong> Pencatatan tidak terstruktur menyulitkan analisis dan perencanaan.</div></li>
+                            <li class="flex items-start"><span class="text-red-500 mr-3 mt-1">●</span><div><strong>Distribusi Tak Terpantau:</strong> Kurangnya visibilitas pada rantai pasok mengurangi kepercayaan.</div></li>
+                            <li class="flex items-start"><span class="text-red-500 mr-3 mt-1">●</span><div><strong>Estimasi Panen Tidak Akurat:</strong> Menyulitkan perencanaan logistik dan penjualan.</div></li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-8 rounded-lg shadow-md">
+                        <h3 class="text-2xl font-semibold mb-4 text-green-600">Manfaat Platform BananaCare</h3>
+                        <ul class="space-y-3 text-gray-700">
+                            <li class="flex items-start"><span class="text-green-500 mr-3 mt-1">✔</span><div><strong>Peningkatan Produktivitas:</strong> Deteksi dini penyakit untuk intervensi cepat.</div></li>
+                            <li class="flex items-start"><span class="text-green-500 mr-3 mt-1">✔</span><div><strong>Efisiensi Operasional:</strong> Optimalisasi jadwal perawatan berbasis data akurat.</div></li>
+                            <li class="flex items-start"><span class="text-green-500 mr-3 mt-1">✔</span><div><strong>Keputusan Berbasis Data:</strong> Perencanaan siklus tanam menjadi lebih baik dan terukur.</div></li>
+                            <li class="flex items-start"><span class="text-green-500 mr-3 mt-1">✔</span><div><strong>Transparansi Rantai Pasok:</strong> Membangun kepercayaan dari kebun hingga ke konsumen.</div></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="arsitektur" class="py-20 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-gray-800">Arsitektur Sistem Terukur</h2>
+                    <p class="text-gray-600 mt-2 max-w-3xl mx-auto">Dibangun dengan arsitektur modern untuk menangani data secara efisien, memastikan sistem tetap responsif dan andal bahkan pada beban kerja tinggi.</p>
+                </div>
+                <div class="lg:grid lg:grid-cols-2 lg:gap-12 items-center">
+                    <div class="mb-10 lg:mb-0 p-4 bg-gray-100 rounded-lg">
+                        <div class="arch-grid">
+                            <!-- Row 1 -->
+                            <div class="arch-item col-start-1">📸<span class="text-sm font-semibold mt-1">Kamera</span></div>
+                            <div class="arch-item col-start-3">📦<span class="text-sm font-semibold mt-1">S3 Storage</span></div>
+                            <div class="arch-arrow" style="top: 25%; left: 23%;">→</div>
+                            
+                            <!-- Row 2 -->
+                            <div class="arch-item col-start-1 row-start-2">📱<span class="text-sm font-semibold mt-1">Aplikasi Mobile</span></div>
+                            <div class="arch-item col-start-2 row-start-2">📨<span class="text-sm font-semibold mt-1">Rabbit MQ</span></div>
+                            <div class="arch-item col-start-3 row-start-2">🧠<span class="text-sm font-semibold mt-1">Worker AI</span></div>
+                            <div class="arch-arrow" style="top: 50%; left: 48%;">→</div>
+                            <div class="arch-arrow" style="top: 25%; left: 73%; transform: rotate(90deg);">↓</div>
+                            <div class="arch-arrow" style="top: 50%; left: 73%; transform: rotate(90deg);">↓</div>
+                            
+                            <!-- Row 3 -->
+                            <div class="arch-item col-start-1 row-start-3">💻<span class="text-sm font-semibold mt-1">Aplikasi Web</span></div>
+                            <div class="arch-item col-start-2 row-start-3">⚙️<span class="text-sm font-semibold mt-1">API</span></div>
+                            
+                            <!-- Row 4 -->
+                            <div class="arch-item col-start-4 row-start-2 row-span-2">🗂️<span class="text-sm font-semibold mt-1">Database</span></div>
+
+                             <!-- Connector Arrows -->
+                            <div class="arch-arrow" style="top: 15%; left: 48%; transform: rotate(90deg);">↓</div>
+                            <div class="arch-arrow" style="top: 38%; left: 23%;">→</div>
+                            <div class="arch-arrow" style="top: 62%; left: 23%;">→</div>
+                            <div class="arch-arrow" style="top: 75%; left: 48%; transform: rotate(90deg);">↓</div>
+                            <div class="arch-arrow" style="top: 62%; left: 73%;">→</div>
+
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4">Alur Kerja Analisis AI</h3>
+                        <p class="mb-6">Klik pada setiap nomor untuk melihat penjelasan detail alur kerja, dari pengambilan gambar hingga hasil analisis tersedia untuk Anda.</p>
+                        <div id="architecture-steps" class="space-y-2">
+                            <div id="step-desc-1" class="p-4 border-l-4 border-gray-200 rounded-r-lg">
+                                <span class="font-bold text-yellow-600 cursor-pointer step-trigger" data-step="1">1. Pengambilan Gambar:</span> Kamera di lahan atau aplikasi mobile mengambil gambar tanaman.
+                            </div>
+                            <div id="step-desc-2" class="p-4 border-l-4 border-gray-200 rounded-r-lg">
+                                <span class="font-bold text-yellow-600 cursor-pointer step-trigger" data-step="2">2. Unggah ke Penyimpanan:</span> Gambar diunggah ke cloud storage (AWS S3) dan URL-nya didapatkan.
+                            </div>
+                            <div id="step-desc-3" class="p-4 border-l-4 border-gray-200 rounded-r-lg">
+                                <span class="font-bold text-yellow-600 cursor-pointer step-trigger" data-step="3">3. Pengiriman Tugas:</span> Pesan berisi URL gambar dikirim ke Rabbit MQ untuk antrian proses.
+                            </div>
+                            <div id="step-desc-4" class="p-4 border-l-4 border-gray-200 rounded-r-lg">
+                                <span class="font-bold text-yellow-600 cursor-pointer step-trigger" data-step="4">4. Pemrosesan oleh Worker:</span> Worker AI mengambil tugas dari antrian Rabbit MQ.
+                            </div>
+                             <div id="step-desc-5" class="p-4 border-l-4 border-gray-200 rounded-r-lg">
+                                <span class="font-bold text-yellow-600 cursor-pointer step-trigger" data-step="5">5. Analisis AI:</span> Worker mengunduh gambar dan melakukan analisis deteksi.
+                            </div>
+                             <div id="step-desc-6" class="p-4 border-l-4 border-gray-200 rounded-r-lg">
+                                <span class="font-bold text-yellow-600 cursor-pointer step-trigger" data-step="6">6. Penyimpanan Hasil:</span> Hasil analisis dalam format JSON disimpan ke Database MongoDB.
+                            </div>
+                             <div id="step-desc-7" class="p-4 border-l-4 border-gray-200 rounded-r-lg">
+                                <span class="font-bold text-yellow-600 cursor-pointer step-trigger" data-step="7">7. Akses via API:</span> Pengguna melihat hasil analisis di aplikasi melalui API utama.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="fitur" class="py-20">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-gray-800">Fitur Sesuai Peran Anda</h2>
+                    <p class="text-gray-600 mt-2 max-w-2xl mx-auto">Setiap pengguna mendapatkan akses ke fitur yang relevan untuk memaksimalkan efektivitas kerja mereka.</p>
+                </div>
+
+                <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 p-4 rounded-md mb-8 max-w-4xl mx-auto">
+                  <h4 class="font-bold">Penjelasan Fitur Dasar</h4>
+                  <p class="mt-1 text-sm">Fitur dasar mencakup fungsi esensial untuk manajemen akun, yaitu: <strong>Login, Register (terbatas), Lupa Password, Aktivasi Akun, Lihat Profil, Update Profil, dan Ganti Password.</strong></p>
+                </div>
+                
+                <div>
+                    <div class="border-b border-gray-200 mb-6">
+                        <nav id="tabs" class="-mb-px flex flex-wrap justify-center gap-4" aria-label="Tabs">
+                        </nav>
+                    </div>
+                    <div id="tab-content" class="bg-white p-8 rounded-lg shadow-inner min-h-[300px]">
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="ai" class="py-20 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-gray-800">Ditenagai Kecerdasan Buatan</h2>
+                    <p class="text-gray-600 mt-2 max-w-2xl mx-auto">Modul AI kami memberikan wawasan mendalam untuk deteksi dini dan estimasi panen yang lebih akurat.</p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-12">
+                    <div class="flex flex-col items-center text-center p-6">
+                        <h3 class="text-xl font-semibold mb-4">AI Deteksi Kesehatan Pohon</h3>
+                        <p class="text-gray-600 mb-6 h-20">Menganalisis gambar daun dan batang untuk mendeteksi penyakit atau kekurangan nutrisi secara otomatis.</p>
+                        <div class="chart-container">
+                            <canvas id="healthChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="flex flex-col items-center text-center p-6">
+                        <h3 class="text-xl font-semibold mb-4">AI Deteksi Kematangan Buah</h3>
+                        <p class="text-gray-600 mb-6 h-20">Memprediksi waktu panen optimal dan estimasi kualitas dari gambar tandan pisang di pohon.</p>
+                        <div class="chart-container">
+                            <canvas id="ripenessChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="teknologi" class="py-20">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-gray-800">Tumpukan Teknologi Modern</h2>
+                    <p class="text-gray-600 mt-2 max-w-2xl mx-auto">Kami menggunakan teknologi terdepan untuk membangun platform yang andal, aman, dan dapat diskalakan.</p>
+                </div>
+                <div id="tech-stack-container" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 max-w-4xl mx-auto">
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-white">
+        <div class="container mx-auto px-6 py-8 text-center">
+            <p>&copy; 2025 BananaCare. Semua Hak Cipta Dilindungi.</p>
+            <p class="text-sm text-gray-400 mt-2">Memberdayakan Masa Depan Agribisnis Pisang.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            const stepTriggers = document.querySelectorAll('.step-trigger');
+            const stepDescriptions = document.querySelectorAll('[id^="step-desc-"]');
+
+            stepTriggers.forEach(trigger => {
+                trigger.addEventListener('click', () => {
+                    const step = trigger.dataset.step;
+                    
+                    stepDescriptions.forEach(desc => {
+                        desc.classList.remove('step-highlight', 'border-yellow-400');
+                        desc.classList.add('border-gray-200');
+                    });
+
+                    const targetDesc = document.getElementById(`step-desc-${step}`);
+                    if (targetDesc) {
+                        targetDesc.classList.add('step-highlight', 'border-yellow-400');
+                        targetDesc.classList.remove('border-gray-200');
+                    }
+                });
+            });
+            
+            const rolesData = {
+                'Super Admin': {
+                    icon: '👑',
+                    description: 'Mengelola keseluruhan platform dan pengguna level tertinggi.',
+                    features: [
+                        'Fitur Dasar (Login, Profil, dll. kecuali Register).',
+                        'Manajemen Daftar Perusahaan.',
+                        'Manajemen Daftar semua Pengguna.',
+                        '<span class="font-bold text-blue-600">[Rekomendasi]</span> Log Aktivitas Sistem.',
+                        '<span class="font-bold text-blue-600">[Rekomendasi]</span> Pengaturan Global Platform.'
+                        ]
+                },
+                'Admin Perusahaan': {
+                    icon: '🏢',
+                    description: 'Mengelola semua operasional dan data di bawah perusahaannya.',
+                    features: [
+                        'Fitur Dasar Lengkap.',
+                        'Manajemen User (Petani & Koordinator).',
+                        'Manajemen Lahan (Tambah & Lihat Lahan Petani).',
+                        'Monitoring Kamera (Lihat & Tambah Kamera per Lahan).',
+                        'Akses Laporan Status & Progres setiap Lahan.',
+                        '<span class="font-bold text-blue-600">[Rekomendasi]</span> Modul Keuangan & Analisis Profitabilitas.',
+                        '<span class="font-bold text-blue-600">[Rekomendasi]</span> Manajemen Inventaris (Pupuk, Bibit).'
+                    ]
+                },
+                'Petani': {
+                    icon: '🧑‍�',
+                    description: 'Fokus pada pencatatan dan pengelolaan aktivitas di lahan pribadi.',
+                    features: [
+                        'Fitur Dasar Lengkap.',
+                        'Manajemen Lahan Pribadi (Tambah Lahan).',
+                        'Input Data Kamera di Lahan.',
+                        'Input Data Tanam (Masa Tanam, Riwayat Proses, Hasil Panen).',
+                        '<span class="font-bold text-blue-600">[Rekomendasi]</span> Notifikasi & Pengingat Otomatis.',
+                        '<span class="font-bold text-blue-600">[Rekomendasi]</span> Panduan Hama & Penyakit (Foto & Cek AI).',
+                        '<span class="font-bold text-blue-600">[Rekomendasi]</span> Informasi Prakiraan Cuaca.'
+                    ]
+                },
+                'Koordinator Lapangan': {
+                    icon: '📋',
+                    description: 'Membantu dan mengelola petani serta data di lapangan.',
+                    features: [
+                        'Fitur Dasar Lengkap.',
+                        'Manajemen Petani (Input Data Petani).',
+                        'Manajemen Lahan Petani (Input Lahan).',
+                        'Monitoring Kamera (Lihat & Tambah Kamera).',
+                        'Input Data Tanam (Riwayat Proses & Hasil Panen).',
+                        '<span class="font-bold text-blue-600">[Rekomendasi]</span> Fitur Penugasan dari Admin.',
+                        '<span class="font-bold text-blue-600">[Rekomendasi]</span> Validasi Data yang Diinput Petani.'
+                    ]
+                },
+                'Distribusi': {
+                    icon: '🚚',
+                    description: 'Melaporkan dan melacak seluruh proses pengiriman hasil panen.',
+                    features: [
+                        'Fitur Dasar Lengkap.',
+                        'Input Laporan Proses Pengiriman Pisang.',
+                        'Pelacakan Status & Posisi Pengiriman.',
+                        '<span class="font-bold text-blue-600">[Rekomendasi]</span> Integrasi Scan QR Code Batch Panen.',
+                        '<span class="font-bold text-blue-600">[Rekomendasi]</span> Optimasi Rute Pengiriman.',
+                        '<span class="font-bold text-blue-600">[Rekomendasi]</span> Laporan Kendala di Perjalanan.'
+                    ]
+                }
+            };
+            
+            const tabsContainer = document.getElementById('tabs');
+            const tabContentContainer = document.getElementById('tab-content');
+            let firstRole = true;
+
+            for (const role in rolesData) {
+                const button = document.createElement('button');
+                button.className = `tab shrink-0 border-b-2 font-medium px-4 py-2 text-sm text-gray-500 hover:border-gray-300 hover:text-gray-700`;
+                button.textContent = role;
+                button.dataset.role = role;
+                if (firstRole) {
+                    button.classList.add('active');
+                }
+                tabsContainer.appendChild(button);
+                firstRole = false;
+            }
+
+            function updateTabContent(role) {
+                const data = rolesData[role];
+                tabContentContainer.innerHTML = `
+                    <div class="text-center">
+                        <span class="text-5xl">${data.icon}</span>
+                        <h3 class="text-2xl font-bold mt-4">${role}</h3>
+                        <p class="text-gray-600 mt-2 mb-6 max-w-xl mx-auto">${data.description}</p>
+                        <ul class="text-left inline-block space-y-2">
+                            ${data.features.map(feature => `<li class="flex items-start"><svg class="w-5 h-5 text-green-500 mr-2 shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg><span>${feature}</span></li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+            }
+            
+            tabsContainer.addEventListener('click', (e) => {
+                if (e.target.matches('button.tab')) {
+                    const role = e.target.dataset.role;
+                    tabsContainer.querySelectorAll('button.tab').forEach(btn => btn.classList.remove('active'));
+                    e.target.classList.add('active');
+                    updateTabContent(role);
+                }
+            });
+            
+            updateTabContent('Super Admin');
+
+            const techStackData = [
+                { name: 'Flutter', icon: '📱' },
+                { name: 'React + Vite', icon: '💻' },
+                { name: 'Node.js', icon: '⚙️' },
+                { name: 'Python', icon: '🧠' },
+                { name: 'Rabbit MQ', icon: '📨' },
+                { name: 'MongoDB', icon: '🗂️' },
+                { name: 'AWS S3', icon: '☁️' },
+                { name: 'Chart.js', icon: '📊' }
+            ];
+
+            const techContainer = document.getElementById('tech-stack-container');
+            techStackData.forEach(tech => {
+                const techEl = document.createElement('div');
+                techEl.className = 'bg-white p-4 rounded-lg shadow-md flex flex-col items-center justify-center text-center';
+                techEl.innerHTML = `
+                    <div class="text-4xl mb-2">${tech.icon}</div>
+                    <p class="font-semibold text-gray-700">${tech.name}</p>
+                `;
+                techContainer.appendChild(techEl);
+            });
+
+            const healthCtx = document.getElementById('healthChart').getContext('2d');
+            new Chart(healthCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Sehat', 'Indikasi Penyakit', 'Kurang Nutrisi'],
+                    datasets: [{
+                        label: 'Distribusi Kesehatan Lahan',
+                        data: [75, 15, 10],
+                        backgroundColor: ['#16a34a', '#facc15', '#fb923c'],
+                        borderColor: '#ffffff',
+                        borderWidth: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.label}: ${context.raw}%`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            const ripenessCtx = document.getElementById('ripenessChart').getContext('2d');
+            new Chart(ripenessCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Mentah', 'Mengkal', 'Hampir Matang'],
+                    datasets: [{
+                        label: 'Estimasi Hari Menuju Panen',
+                        data: [21, 10, 3],
+                        backgroundColor: ['#a3e635', '#fde047', '#f97316'],
+                        borderColor: '#ffffff',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.raw} hari`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Estimasi Hari'
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+�
